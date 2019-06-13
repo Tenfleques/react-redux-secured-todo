@@ -12,9 +12,6 @@ class TodoList extends React.Component {
     const {dispatch} = this.props
     dispatch(userActions.deleteTodo(id))
   }
-  handleInitEdit(e){
-
-  }
   listTodos(){
     const user = JSON.parse(localStorage.getItem("user"));
 
@@ -22,12 +19,8 @@ class TodoList extends React.Component {
       <div key={todo.id} className="col-12 col-md-4 col-lg-3">
           <div className="card text-white bg-primary mb-3 pb-3">
             <div className="card-body">
-              <div className="row">
-                <span className="h5 col text-left text-warning" onClick={(e) => this.handleInitEdit(todo.id)}>
-                  {(user.role === "admin" || (todo.createdBy === user.name)) && "edit" }
-                  </span>
-
-                  <span className="h5 col-1 text-right text-danger" onClick={() => this.handleDelete(todo.id)}>
+              <div className="row">              
+                  <span className="h5 col-12 px-2 text-right text-danger" onClick={() => this.handleDelete(todo.id)}>
                     {(user.role === "admin" || (todo.createdBy === user.name)) && "x" }
                   </span>
               </div>
