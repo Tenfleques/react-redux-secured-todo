@@ -34,3 +34,6 @@
 .filter--active {
   border-bottom: 1px solid black;
 }
+.max-w-600px{
+  max-width: 600px;
+}

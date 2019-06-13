@@ -1,5 +1,12 @@
-import { combineReducers } from "redux";
-import visibilityFilter from "./visibilityFilter";
-import todos from "./todos";
+import { combineReducers } from 'redux';
+import { authentication } from './authentication.reducer';
+import { todos } from './todos.reducer';
+import { alert } from './alert.reducer';
 
-export default combineReducers({ todos, visibilityFilter });
+const rootReducer = combineReducers({
+  authentication,
+  todos,
+  alert
+});
+
+export default rootReducer;

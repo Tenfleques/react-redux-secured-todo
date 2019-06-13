@@ -1,0 +1,11 @@
+{
+    "title" : "toDo",
+    "name" : "todo",
+    "version": "1",
+    "description" : "",
+    "author": {
+        "name" : "Tendai Mapungwana Chikake",
+        "email" : "tenfleques@icloud.com",
+        "github": "https://github.com/Tenfleques"
+    }
+}
