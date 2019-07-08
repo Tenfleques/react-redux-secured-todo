@@ -2,59 +2,29 @@ import React from 'react';
 import { connect } from 'react-redux';
 import { userActions } from '../redux';
 import Base64ImagesConstants from "../constants/images.base64.json";
+import Todo from "./Todo";
 
 class TodoList extends React.Component {
   componentDidMount(){
-    const {dispatch} = this.props
-    dispatch(userActions.getTodos());
+    this.props.getTodos();
   }
   handleDelete(id){
-    const {dispatch} = this.props
-    dispatch(userActions.deleteTodo(id))
-  }
-  listTodos(){
-    const user = this.props.user;
-
-    return (!this.props.todos.length && <img src={Base64ImagesConstants.loading}  alt=""/>) || (this.props.todos && (this.props.todos instanceof Array) && this.props.todos.map(todo => (
-      <div key={todo.id} className="col-12 col-md-4 col-lg-3">
-          <div className="card text-white bg-primary mb-3 pb-3">
-            <div className="card-body">
-              <div className="row">              
-                  <span className="h5 col-12 px-2 text-right text-danger" onClick={() => this.handleDelete(todo.id)}>
-                    {(user.role === "admin" || (todo.createdBy === user.name)) && "x" }
-                  </span>
-              </div>
-              <h4 className="card-title">
-                {todo.title}
-              </h4>
-              <p className="card-text">{todo.description}</p>
-            </div>
-            <div className="card-footer pt-1 pb-0">
-              <em>
-                {todo.createdBy}
-              </em>
-            </div>
-          </div>
-      </div>
-    )));
+    this.props.deleteTodo(id)
   }
   render() {
       return (
-        <div className="col-12 mt-5">
-          <div className="row">
-            {this.listTodos()}
-          </div>
-        </div>
-      );
+        !this.props.todos.length && <img src={Base64ImagesConstants.loading}  alt="" className="mx-auto hpem-4"/>) 
+      || 
+        (this.props.todos && (this.props.todos instanceof Array) && this.props.todos.map(todo => <Todo key={todo.id} todo={todo}/>)
+    );
   }
 }
 
 function mapStateToProps(state) {
-    const { todos, user } = state;
-    console.log(state)
+    const { todos, authentication } = state;
     return {
       todos,
-      user
+      user : authentication.user
     };
 }
-export default connect(mapStateToProps)(TodoList)
+export default connect(mapStateToProps,userActions)(TodoList)

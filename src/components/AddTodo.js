@@ -1,6 +1,5 @@
 import React from 'react';
 import { connect } from 'react-redux';
-
 import { userActions } from '../redux';
 
 class AddTodoForm extends React.Component {
@@ -10,7 +9,7 @@ class AddTodoForm extends React.Component {
             title: '',
             description: '',
             submitted: false,
-            collapsed: false
+            collapsed: true
         };
 
         this.handleChange = this.handleChange.bind(this);
@@ -30,24 +29,15 @@ class AddTodoForm extends React.Component {
         e.preventDefault();
         this.setState({ submitted: true });
         const { title, description } = this.state;
-        const { dispatch } = this.props;
         if (title && description) {
-            let res = userActions.addTodo(title, description)
-            dispatch(res);
-            console.log(res)
-            /*res.then(r => this.setState({
-                title: '',
-                description: '',
-                submitted: false
-            }))*/
-            
+            this.props.addTodo(title, description)
         }
     }
 
     render() {
         const { title, description, submitted } = this.state;
         return (
-            <div className="col-12">
+            <div className="mb-3 card col-12 col-md-8 col-lg-6">
                 <form className="row max-w-600px mr-auto" onSubmit={this.handleSubmit}>
                     <h4 className="text-primary col-12">
                       Add new toDo
@@ -99,9 +89,4 @@ class AddTodoForm extends React.Component {
     }
 }
 
-function mapStateToProps(state) {
-    return {
-        state
-    };
-}
-export default connect(mapStateToProps)(AddTodoForm)
+export default connect(null,userActions)(AddTodoForm)

@@ -2,9 +2,9 @@ import React from 'react';
 import {Link} from 'react-router-dom';
 import AppConfig from "../app.json";
 import { userActions } from '../redux';
+import { connect } from 'react-redux';
 
 function NavBar(props) {
-  console.log(props)
   return (
     <nav className="navbar navbar-dark bg-primary fixed-top">
       <Link className="nav-item text-white" to="/">
@@ -13,12 +13,20 @@ function NavBar(props) {
       <Link className="nav-item text-white" to="/todos">
         Todos
       </Link>
-      {}
-      <Link className="nav-item text-white" to="#" onClick={props.actions.logout} >
-      Logout {props.actions.authentication.user.name}
+      {props.user.role === "admin" && <Link className="nav-item text-white" to="/users">
+        Users
+      </Link>}
+      <Link className="nav-item text-white" to="#"  onClick={props.logout} >
+      Logout {props.user.name}
       </Link>
     </nav>
   );
 }
-
-export default NavBar;
+function mapStateToProps(state) {
+  const { alert, authentication } = state;
+  return {
+      alert,
+      user: authentication.user
+  };
+}
+export default connect(mapStateToProps, userActions)(NavBar);

@@ -1,16 +1,15 @@
 import React from 'react';
-import {NavBar} from '../../Components'
+import {NavBar} from '../../Components';
+import { connect } from 'react-redux';
 
-export default function Home(props) {
-    let user = props.user
-    console.log(props.actions)
+const Home = (props) => {
     return (
         <div>
-            <NavBar actions={props.actions}/>
+            <NavBar/>
             <div className="container">
                 <div className="row mt-5">
                     <div className="col-12">
-                        Welcome {user.name}
+                        Welcome {props.user.name}
                     </div>
                 </div>            
             </div>    
@@ -18,3 +17,11 @@ export default function Home(props) {
     );
   }
   
+  function mapStateToProps(state) {
+    const { alert, authentication } = state;
+    return {
+        alert,
+        user : authentication.user
+    };
+  }
+  export default connect(mapStateToProps)(Home);

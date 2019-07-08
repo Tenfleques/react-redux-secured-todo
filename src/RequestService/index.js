@@ -21,10 +21,10 @@ function logout() {
     return RequestService.getRequest("logout","POST", {});
 }
 function getMe(){
-    return RequestService.getRequest("me","GET", {});
+    return RequestService.getRequest("me","GET");
 }
 function getUsers(){
-    return RequestService.getRequest("users","GET", {});
+    return RequestService.getRequest("users","GET");
 }
 function addTodo(title, description){
     let body = {

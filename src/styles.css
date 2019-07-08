@@ -37,3 +37,11 @@
 .max-w-600px{
   max-width: 600px;
 }
+
+.hpem-4{
+  max-height: 0.4em;
+  width: auto;
+}
+.cursor-pointer{
+  cursor: pointer;
+}

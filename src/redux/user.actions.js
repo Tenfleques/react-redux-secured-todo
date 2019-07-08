@@ -2,6 +2,7 @@ import { userConstants } from '../constants/user.constants';
 import { userService } from '../RequestService';
 import { alertActions } from './alert.actions';
 import { history } from '../helpers/history';
+import { catchUserActionErrors } from "./catchUserActionErrors";
 
 export const userActions = {
     login,
@@ -17,10 +18,12 @@ export const userActions = {
 
 function login(username, password) {
     return dispatch => {
+        dispatch(alertActions.clear());
         dispatch(request({ username }));
         userService.login(username, password)
             .then(
                 user => { 
+                    console.log(user)
                     if(user["code"]){
                         dispatch(failure(user.message));
                         dispatch(alertActions.error(user.message));
@@ -42,7 +45,25 @@ function login(username, password) {
 }
 
 function logout() {
-    return userService.logout();
+    return dispatch => {
+        dispatch(alertActions.clear());
+        dispatch(request("attempting logout"));
+        userService.logout()
+            .then(
+                res => { 
+                    console.log(res)
+                    history.push('/login');
+                    return dispatch(success(res));
+                },
+                error => {
+                    dispatch(failure(error.toString()));
+                    dispatch(alertActions.error(error.toString()));
+                }
+            );
+    };
+    function request(message) { return { type: userConstants.LOGIN_REQUEST, message } }
+    function success(res) { return { type: userConstants.LOGOUT_SUCCESS, res } }
+    function failure(error) { return { type: userConstants.LOGOUT_FAILURE, error } }
 }
 
 function getMe() {
@@ -50,7 +71,13 @@ function getMe() {
         dispatch(request());
         userService.getMe()
             .then(
-                user => dispatch(success(user)),
+                user => {
+                    if(!user.name){
+                        dispatch(alertActions.error("User not found"))
+                        return dispatch(failure("User not found"));
+                    }
+                    return dispatch(success(user))
+                },
                 error => dispatch(failure(error.toString()))
             );
     };
@@ -77,14 +104,15 @@ function getUsers() {
 
 function getTodos() {
     return dispatch => {
-        dispatch(request());
+        //dispatch(request());
         userService.getTodos()
             .then(
                 todos => dispatch(success(todos)),
                 error => dispatch(failure(error.toString()))
-            );
+            )
+            .catch(catchUserActionErrors);
     };
-    function request() { return { type: userConstants.GET_TODOS_REQUEST } }
+    //function request() { return { type: userConstants.GET_TODOS_REQUEST } }
     function success(todos) { return { type: userConstants.GET_TODOS_SUCCESS, todos } }
     function failure(error) { return { type: userConstants.GET_TODOS_FAILURE, error } }
 }
@@ -96,7 +124,8 @@ function getTodo(id) {
             .then(
                 todo => dispatch(success(todo)),
                 error => dispatch(failure(error.toString()))
-            );
+            )
+            .catch(catchUserActionErrors);
     };
     function request() { return { type: userConstants.GET_TODOS_REQUEST } }
     function success(todos) { return { type: userConstants.GET_TODO_SUCCESS, todos } }
@@ -120,6 +149,12 @@ function addTodo(title, description){
                     dispatch(failure(error.toString()));
                     dispatch(alertActions.error(error.toString()));
                 }
+            )
+            .catch(catchUserActionErrors)
+            .finally(
+                () => {
+                    dispatch(getTodos);
+                }
             );
     };
     function request() { return { type: userConstants.ADD_TODO_REQUEST } }
@@ -135,21 +170,28 @@ function updateTodo(path, body, user){
         userService.updateTodo(path, body)
             .then(
                 res => { 
-                    if(res !== "Success"){
+                    console.log(res);
+                    /*if(res !== "Success"){
                         dispatch(failure(res));
                         dispatch(alertActions.error(res));
                     }else{
                         dispatch(success(updated));
-                    }
+                    }*/
                 },
                 error => {
                     dispatch(failure(error.toString()));
                     dispatch(alertActions.error(error.toString()));
                 }
+            )
+            .catch(catchUserActionErrors)
+            .finally(
+                () => {
+                    dispatch(getTodos);
+                }
             );
     };
     function request() { return { type: userConstants.EDIT_TODO_REQUEST } }
-    function success(todo) { return { type: userConstants.EDIT_TODO_SUCCESS, todo } }
+    //function success(todo) { return { type: userConstants.EDIT_TODO_SUCCESS, todo } }
     function failure(error) { return { type: userConstants.EDIT_TODO_FAILURE, error } }
 }
 
@@ -158,21 +200,22 @@ function deleteTodo(path){
         dispatch(request(path));
         userService.deleteTodo(path)
             .then(
-                res => { 
-                    if(res !== "Success"){
-                        dispatch(failure(res));
-                        dispatch(alertActions.error(res));
-                    }else{
-                        dispatch(success(path));
-                    }
+                () => { 
+                    dispatch(success(path));
                 },
                 error => {
                     dispatch(failure(error.toString()));
                     dispatch(alertActions.error(error.toString()));
                 }
+            )
+            .catch(catchUserActionErrors)
+            .finally(
+                () => {
+                    dispatch(getTodos);
+                }
             );
     };
-    function request(id) { return { type: userConstants.DELETE_TODO_REQUEST } }
+    function request(id) { return { type: userConstants.DELETE_TODO_REQUEST, id } }
     function success(id) { return { type: userConstants.DELETE_TODO_SUCCESS, id } }
     function failure(error) { return { type: userConstants.DELETE_TODO_FAILURE, error } }
 }
