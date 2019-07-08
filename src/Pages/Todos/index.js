@@ -8,11 +8,11 @@ export default function ToDoPage(props) {
             <NavBar actions={props.actions}/>
             <div className="container">
                 <div className="row mt-5">
-                    
+                <TodoList user={props.authentication.user} todos={props.todos} />  
                 </div>  
             </div>
         </div>
     );
   }
 //   <AddTodoForm/>
-//   <TodoList /> <TodoList user={props.authentication.user} todos={props.todos} />
+//   <TodoList /> 
