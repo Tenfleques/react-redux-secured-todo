@@ -3,13 +3,11 @@ import { Router, Route } from 'react-router-dom';
 import { connect } from 'react-redux';
 
 import { history } from './helpers/history';
-import { alertActions } from './redux';
-import { PrivateRoute } from './Components/PrivateRoute';
+import { alertActions, userActions } from './redux';
 
-import Home from './Pages/Home';
-import Todos from "./Pages/Todos";
-import LoginPage from "./Pages/Auth/Login"
-import RequestService from "./RequestService/service";
+import {PrivateRoute} from './Components'
+
+import {Home, Todos,LoginPage}  from './Pages';
 
 import Base64ImagesConstants from "./constants/images.base64.json";
 
@@ -21,52 +19,43 @@ class App extends React.Component {
         super(props);
         const { dispatch } = this.props;
         history.listen((location, action) => {
-            dispatch(alertActions.clear());
+            //dispatch(alertActions.clear());
         });
-        this.state = {
-            loggedChecked: null
-        }
     }
-    async componentDidMount(){
-        let resp = RequestService.getRequest("me","GET", {});  
-        resp.then(me =>{
-            if(!Object.keys(me).includes("name")){
-                localStorage.removeItem("user");
-            }else{
-                localStorage.setItem("user", JSON.stringify(me))
-            }
-            this.setState({
-                loggedChecked: true,
-            });
-        })
-        .catch((e) => {
-            localStorage.removeItem("user");
-            console.log(e)
-        })  
-    }
-
     render() {
         return (
             <div>
                 {
-                    this.state.loggedChecked === null && 
+                    this.props.authentication.checkingUser && 
                     <div className="row mt-5 pt-5">
                         <div className="mx-auto display-1 mt-5 pt-5">
-                            Welcome <img src={Base64ImagesConstants.loading} 
-                                    alt=""
-                                    />
+                            Welcome 
+                            <img src={Base64ImagesConstants.loading} 
+                                    alt="загрузка..."
+                            />
                         </div>                        
                     </div>
 
-                }{
-                    this.state.loggedChecked && 
-                    <Router history={history}>
-                        <div>
-                            <PrivateRoute exact path="/" component={Home} />
-                            <PrivateRoute exact path="/todos" component={Todos} />                    
-                            <Route path="/login" component={LoginPage} />
-                        </div>
-                    </Router>  
+                }
+                {
+                    (this.props.authentication) && 
+                    (
+                        <Router history={history}>
+                            <div>
+                                <PrivateRoute exact path="/" 
+                                    component={Home} 
+                                    authed={this.props.authentication}
+                                    actions={this.props}
+                                    />
+                                <PrivateRoute exact path="/todos"  
+                                    component={Todos} 
+                                    authed={this.props.authentication}
+                                    actions={this.props}
+                                    />                    
+                                <Route path="/login" component={LoginPage} />
+                            </div>
+                        </Router>  
+                    ) 
                 } 
             </div>
                              
@@ -75,11 +64,11 @@ class App extends React.Component {
 }
 
 function mapStateToProps(state) {
-    const { alert, todos } = state;
+    const { alert, todos, authentication } = state;
     return {
         alert,
-        todos
+        todos,
+        authentication
     };
 }
-
-export default connect(mapStateToProps)(App);
+export default connect(mapStateToProps, userActions)(App);

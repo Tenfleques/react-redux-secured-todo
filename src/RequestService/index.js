@@ -1,39 +1,30 @@
 import RequestService from "./service"
-
 export const userService = {
     login,
+    logout,
     getMe,
+    getUsers,
     addTodo,
     getTodos,
-    deleteTodo,
+    getTodo,
     updateTodo,
-    logout
+    deleteTodo
 };
 function login(login, password) {
     let body = {
         "login" : login, 
         "password": password,
     }
-    let resp = RequestService.getRequest("login","POST", body);
-    return resp.then(function(user){
-        localStorage.setItem('user', JSON.stringify(user));
-        return user;
-    });
+    return RequestService.getRequest("login","POST", body);
 }
 function logout() {
-    RequestService.getRequest("logout","POST", {});
-    localStorage.removeItem('user');
+    return RequestService.getRequest("logout","POST", {});
 }
 function getMe(){
-    let resp = RequestService.getRequest("me","GET", {});
-    console.log(localStorage.getItem("user"))
-    resp.then(function(user){
-        if(!user.name){
-            localStorage.removeItem('user');
-        }
-    }).catch(function(e){
-        localStorage.removeItem('user');
-    });
+    return RequestService.getRequest("me","GET", {});
+}
+function getUsers(){
+    return RequestService.getRequest("users","GET", {});
 }
 function addTodo(title, description){
     let body = {
@@ -43,16 +34,14 @@ function addTodo(title, description){
     return RequestService.getRequest("todos","POST", body);
 }
 function getTodos(){
-    let res = RequestService.getRequest("todos","GET", {});
-    return res;
+    return RequestService.getRequest("todos","GET");
+}
+function getTodo(id){
+    return RequestService.getRequest("todos","GET", id);
+}
+function updateTodo(id, body){
+    return RequestService.getRequest("todos","PUT",id, body)
 }
 function deleteTodo(id){
-    console.log(id)
-    let res = RequestService.getRequest("todos","DELETE",id)
-    return res;
-}
-
-function updateTodo(id, body){
-    let res = RequestService.getRequest("todos","PUT",id, body)
-    return res;
+    return RequestService.getRequest("todos","DELETE",id)
 }

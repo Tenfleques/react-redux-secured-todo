@@ -13,7 +13,7 @@ class TodoList extends React.Component {
     dispatch(userActions.deleteTodo(id))
   }
   listTodos(){
-    const user = JSON.parse(localStorage.getItem("user"));
+    const user = this.props.user;
 
     return (!this.props.todos.length && <img src={Base64ImagesConstants.loading}  alt=""/>) || (this.props.todos && (this.props.todos instanceof Array) && this.props.todos.map(todo => (
       <div key={todo.id} className="col-12 col-md-4 col-lg-3">
@@ -50,10 +50,11 @@ class TodoList extends React.Component {
 }
 
 function mapStateToProps(state) {
-    const { todos } = state;
+    const { todos, user } = state;
     console.log(state)
     return {
-      todos
+      todos,
+      user
     };
 }
 export default connect(mapStateToProps)(TodoList)

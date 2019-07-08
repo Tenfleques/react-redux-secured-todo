@@ -5,18 +5,19 @@ import { history } from '../helpers/history';
 
 export const userActions = {
     login,
-    getMe,
     logout,
+    getMe,
+    getUsers,
     addTodo,
     getTodos,
-    deleteTodo,
-    updateTodo
+    getTodo,
+    updateTodo,
+    deleteTodo
 };
 
 function login(username, password) {
     return dispatch => {
         dispatch(request({ username }));
-
         userService.login(username, password)
             .then(
                 user => { 
@@ -41,8 +42,65 @@ function login(username, password) {
 }
 
 function logout() {
-    userService.logout();
-    return { type: userConstants.LOGOUT };
+    return userService.logout();
+}
+
+function getMe() {
+    return dispatch => {
+        dispatch(request());
+        userService.getMe()
+            .then(
+                user => dispatch(success(user)),
+                error => dispatch(failure(error.toString()))
+            );
+    };
+
+    function request() { return { type: userConstants.GET_ME_REQUEST} }
+    function success(user) { return { type: userConstants.GET_ME_SUCCESS, user } }
+    function failure(error) { return { type: userConstants.GET_ME_FAILURE, error } }
+}
+
+function getUsers() {
+    return dispatch => {
+        dispatch(request());
+        userService.getUsers()
+            .then(
+                users => dispatch(success(users)),
+                error => dispatch(failure(error.toString()))
+            );
+    };
+
+    function request() { return { type: userConstants.GET_USERS_REQUEST} }
+    function success(users) { return { type: userConstants.GET_USERS_SUCCESS, users } }
+    function failure(error) { return { type: userConstants.GET_USERS_FAILURE, error } }
+}
+
+function getTodos() {
+    return dispatch => {
+        dispatch(request());
+        userService.getTodos()
+            .then(
+                todos => dispatch(success(todos)),
+                error => dispatch(failure(error.toString()))
+            );
+    };
+    function request() { return { type: userConstants.GET_TODOS_REQUEST } }
+    function success(todos) { return { type: userConstants.GET_TODOS_SUCCESS, todos } }
+    function failure(error) { return { type: userConstants.GET_TODOS_FAILURE, error } }
+}
+
+function getTodo(id) {
+    return dispatch => {
+        dispatch(request());
+        userService.getTodo(id)
+            .then(
+                todo => dispatch(success(todo)),
+                error => dispatch(failure(error.toString()))
+            );
+    };
+    function request() { return { type: userConstants.GET_TODOS_REQUEST } }
+    function success(todos) { return { type: userConstants.GET_TODO_SUCCESS, todos } }
+    function failure(error) { return { type: userConstants.GET_TODO_FAILURE, error } }
 }
 
 function addTodo(title, description){
@@ -68,8 +126,7 @@ function addTodo(title, description){
     function success(todo) { return { type: userConstants.ADD_TODO_SUCCESS, todo } }
     function failure(error) { return { type: userConstants.ADD_TODO_FAILURE, error } }
 }
-function updateTodo(path, body){
-    const user = JSON.parse(localStorage.getItem("user"));
+function updateTodo(path, body, user){
     const updated = JSON.parse(JSON.stringify(body))
     updated["id"] = path;
     updated["createdBy"] = user.name
@@ -91,9 +148,9 @@ function updateTodo(path, body){
                 }
             );
     };
-    function request() { return { type: userConstants.ADD_TODO_REQUEST } }
-    function success(todo) { return { type: userConstants.ADD_TODO_SUCCESS, todo } }
-    function failure(error) { return { type: userConstants.ADD_TODO_FAILURE, error } }
+    function request() { return { type: userConstants.EDIT_TODO_REQUEST } }
+    function success(todo) { return { type: userConstants.EDIT_TODO_SUCCESS, todo } }
+    function failure(error) { return { type: userConstants.EDIT_TODO_FAILURE, error } }
 }
 
 function deleteTodo(path){
@@ -115,35 +172,10 @@ function deleteTodo(path){
                 }
             );
     };
-    function request(id) { return { type: userConstants.ADD_TODO_REQUEST } }
-    function success(id) { return { type: userConstants.ADD_TODO_SUCCESS, id } }
-    function failure(error) { return { type: userConstants.ADD_TODO_FAILURE, error } }
+    function request(id) { return { type: userConstants.DELETE_TODO_REQUEST } }
+    function success(id) { return { type: userConstants.DELETE_TODO_SUCCESS, id } }
+    function failure(error) { return { type: userConstants.DELETE_TODO_FAILURE, error } }
 }
 
-function getTodos() {
-    return dispatch => {
-        dispatch(request());
-        userService.getTodos()
-            .then(
-                todos => dispatch(success(todos)),
-                error => dispatch(failure(error.toString()))
-            );
-    };
-    function request() { return { type: userConstants.GET_TODOS_REQUEST } }
-    function success(todos) { return { type: userConstants.GET_TODOS_SUCCESS, todos } }
-    function failure(error) { return { type: userConstants.GET_TODOS_FAILURE, error } }
-}
-function getMe() {
-    return dispatch => {
-        dispatch(request());
-        userService.getAll()
-            .then(
-                user => dispatch(success(user)),
-                error => dispatch(failure(error.toString()))
-            );
-    };
 
-    function request() { return { type: userConstants.GETME_REQUEST } }
-    function success(user) { return { type: userConstants.GETME_SUCCESS, user } }
-    function failure(error) { return { type: userConstants.GETME_FAILURE, error } }
-}
+

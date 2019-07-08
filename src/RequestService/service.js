@@ -1,4 +1,5 @@
 import APIpoints from "./endpoints";
+import errorController from "./errorController";
 
 class RequestService {
     async getRequest(point, method){
@@ -27,17 +28,19 @@ class RequestService {
         if(method.toUpperCase() === "PUT" || method.toUpperCase() === "DELETE"){
             id = "/" + arguments[2];
         }
+        if(method.toUpperCase() === "GET" && arguments[2]){
+            id = "/" + arguments[2];
+        }
+
         let data = await (await (fetch(APIpoints(point) + id, opts)
-            .then(res => {
-                return res.json()
+            .then(response => {
+                return response.text().then(function(text) {
+                    return text ? JSON.parse(text) : {}
+                })
             })
-            .catch(err => {
-                console.log('Error: ', err)
-                return err;
-            })
+            .catch(errorController)
         ))
         return data
     }
 }
-    
 export default new RequestService()

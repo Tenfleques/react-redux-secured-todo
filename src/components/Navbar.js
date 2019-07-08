@@ -3,8 +3,8 @@ import {Link} from 'react-router-dom';
 import AppConfig from "../app.json";
 import { userActions } from '../redux';
 
-function NavBar() {
-  let user = JSON.parse(localStorage.getItem('user'));
+function NavBar(props) {
+  console.log(props)
   return (
     <nav className="navbar navbar-dark bg-primary fixed-top">
       <Link className="nav-item text-white" to="/">
@@ -13,8 +13,9 @@ function NavBar() {
       <Link className="nav-item text-white" to="/todos">
         Todos
       </Link>
-      <Link className="nav-item text-white" to="#" onClick={userActions.logout}>
-        Logout {user.name}
+      {}
+      <Link className="nav-item text-white" to="#" onClick={props.actions.logout} >
+      Logout {props.actions.authentication.user.name}
       </Link>
     </nav>
   );

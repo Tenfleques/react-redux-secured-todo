@@ -4,6 +4,7 @@ import { connect } from 'react-redux';
 import { userActions } from '../../../redux';
 import Base64ImagesConstants from "../../../constants/images.base64.json";
 
+
 class LoginPage extends React.Component {
     constructor(props) {
         super(props);
@@ -26,14 +27,11 @@ class LoginPage extends React.Component {
 
     handleSubmit(e) {
         e.preventDefault();
-
         this.setState({ submitted: true });
         const { login, password } = this.state;
         const { dispatch } = this.props;
         if (login && password) {
-            let res = userActions.login(login, password)
-            dispatch(res);
-            dispatch(userActions.getTodos())
+            dispatch(userActions.login(login, password))
         }
     }
 
@@ -88,7 +86,6 @@ class LoginPage extends React.Component {
         );
     }
 }
-
 function mapStateToProps(state) {
     const { loggingIn } = state.authentication;
     return {

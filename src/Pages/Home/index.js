@@ -1,17 +1,20 @@
 import React from 'react';
-import NavBar from "../../Components/Navbar";
+import {NavBar} from '../../Components'
 
-export default function Home() {
-    let user = JSON.parse(localStorage.getItem('user'));
+export default function Home(props) {
+    let user = props.user
+    console.log(props.actions)
     return (
-        <div className="container">
-            <NavBar/>
-            <div className="row mt-5">
-                <div className="col-12">
-                    Welcome {user.name}
-                </div>
-            </div>            
-        </div>        
+        <div>
+            <NavBar actions={props.actions}/>
+            <div className="container">
+                <div className="row mt-5">
+                    <div className="col-12">
+                        Welcome {user.name}
+                    </div>
+                </div>            
+            </div>    
+        </div>
     );
   }
   

@@ -3,8 +3,6 @@ import { connect } from 'react-redux';
 
 import { userActions } from '../redux';
 
-import Base64ImagesConstants from "../constants/images.base64.json";
-
 class AddTodoForm extends React.Component {
     constructor(props) {
         super(props);            
@@ -36,11 +34,17 @@ class AddTodoForm extends React.Component {
         if (title && description) {
             let res = userActions.addTodo(title, description)
             dispatch(res);
+            console.log(res)
+            /*res.then(r => this.setState({
+                title: '',
+                description: '',
+                submitted: false
+            }))*/
+            
         }
     }
 
     render() {
-        const { posting } = this.props;
         const { title, description, submitted } = this.state;
         return (
             <div className="col-12">
@@ -83,12 +87,7 @@ class AddTodoForm extends React.Component {
                                 type="submit"
                                 className="form-control col-12 mb-3"
                             >
-                                Submit &nbsp;
-                                {posting &&
-                                    <img src={Base64ImagesConstants.loading} 
-                                    alt=""
-                                    />
-                                }
+                                Submit 
                             </button>
                             
                         </div>
@@ -101,9 +100,8 @@ class AddTodoForm extends React.Component {
 }
 
 function mapStateToProps(state) {
-    const { loggingIn } = state.authentication;
     return {
-        loggingIn
+        state
     };
 }
 export default connect(mapStateToProps)(AddTodoForm)
