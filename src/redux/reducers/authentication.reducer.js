@@ -3,7 +3,6 @@ import { userConstants } from '../../constants/user.constants';
 const initialState = {
   checkedUser : false
 };
-
 export function authentication(state = initialState, action) {
   switch (action.type) {
     case userConstants.LOGIN_REQUEST:
@@ -27,6 +26,7 @@ export function authentication(state = initialState, action) {
         error : action.error 
       };
     case userConstants.LOGOUT_SUCCESS:
+    case userConstants.LOGIN_FAILURE:
       state = {};
       return {
         loggedIn: false,
@@ -48,7 +48,8 @@ export function authentication(state = initialState, action) {
         return {
           checkingUser: false,
           checkedUser: true,
-          user: {}
+          user: {},
+          error : action.error
         }
     default:
       return state

@@ -1,5 +1,5 @@
 import APIpoints from "./endpoints";
-import errorController from "./errorController";
+import errorController from "../Exceptions/errorController";
 
 class RequestService {
     async getRequest(point, method){

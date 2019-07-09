@@ -6,6 +6,7 @@ import Todo from "./Todo";
 
 class TodoList extends React.Component {
   componentDidMount(){
+    console.log(this.props)
     this.props.getTodos();
   }
   handleDelete(id){
@@ -13,7 +14,7 @@ class TodoList extends React.Component {
   }
   render() {
       return (
-        !this.props.todos.length && <img src={Base64ImagesConstants.loading}  alt="" className="mx-auto hpem-4"/>) 
+        this.props.todos.loading && <img src={Base64ImagesConstants.loading}  alt="" className="mx-auto hpem-4"/>) 
       || 
         (this.props.todos && (this.props.todos instanceof Array) && this.props.todos.map(todo => <Todo key={todo.id} todo={todo}/>)
     );

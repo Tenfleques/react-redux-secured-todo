@@ -5,11 +5,12 @@ import { connect } from 'react-redux';
 import { history } from './helpers/history';
 import { userActions } from './redux';
 
-import {PrivateRoute} from './Components'
-
+import {PrivateRoute, FooterBar} from './Components'
 import {Home, Todos, LoginPage, Users}  from './Pages';
-
 import Base64ImagesConstants from "./constants/images.base64.json";
+
+import {ErrorBoundarySilent, ErrorBoundaryNoisy} from "./Exceptions"
+
 
 import "./bootstrap.css"
 import "./styles.css";
@@ -38,23 +39,32 @@ class App extends React.Component {
                     (
                         <Router history={history}>
                             <div>
-                                <PrivateRoute exact path="/" 
-                                    component={Home} 
-                                    />
-                                <PrivateRoute exact path="/todos"  
-                                    component={Todos} 
-                                    />  
-                                <PrivateRoute exact path="/users"  
-                                    component={Users} 
-                                    />  
-
-                                <Route path="/login" component={LoginPage} />
+                                <ErrorBoundaryNoisy>
+                                    <PrivateRoute exact path="/" 
+                                        component={Home} 
+                                        />
+                                </ErrorBoundaryNoisy>
+                                <ErrorBoundaryNoisy>
+                                    <PrivateRoute exact path="/todos"  
+                                        component={Todos} 
+                                        /> 
+                                </ErrorBoundaryNoisy>
+                                <ErrorBoundaryNoisy>
+                                   <PrivateRoute exact path="/users"  
+                                        component={Users} 
+                                        />  
+                                </ErrorBoundaryNoisy>
+                                <ErrorBoundaryNoisy>
+                                    <Route path="/login" component={LoginPage} />
+                                </ErrorBoundaryNoisy>   
                             </div>
                         </Router>  
                     ) 
-                } 
-            </div>
-                             
+                }
+                <ErrorBoundarySilent>
+                    <FooterBar />
+                </ErrorBoundarySilent> 
+            </div>                     
         );
     }
 }

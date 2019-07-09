@@ -1,14 +1,22 @@
 import React from 'react';
 import {AddTodoForm,TodoList, NavBar} from "../../Components";
+import {ErrorBoundarySilent, ErrorBoundaryNoisy} from "../../Exceptions"
 
 export default function ToDoPage() {
     return (
         <div>
-            <NavBar/>
-            <div className="container">
+            <ErrorBoundarySilent>
+                <NavBar/>
+            </ErrorBoundarySilent>
+            <div className="container mb-5">
                 <div className="row mt-5">
-                    <AddTodoForm/>
-                    <TodoList />  
+                    <ErrorBoundarySilent>
+                        <AddTodoForm/>
+                    </ErrorBoundarySilent>
+
+                    <ErrorBoundaryNoisy fallback="<em classNmne='text-danger'> failed to get todos... </em>">
+                        <TodoList />
+                    </ErrorBoundaryNoisy>                   
                 </div>  
             </div>
         </div>

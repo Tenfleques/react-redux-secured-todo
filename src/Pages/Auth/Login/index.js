@@ -1,22 +1,21 @@
 import React from 'react';
 import { connect } from 'react-redux';
 
-import { userActions } from '../../../redux';
+import { alertActions, userActions } from '../../../redux';
 import Base64ImagesConstants from "../../../constants/images.base64.json";
 
 
 class LoginPage extends React.Component {
     constructor(props) {
         super(props);
-        if(localStorage.removeItem('user'))
-            this.props.dispatch(userActions.logout());
-            
+    
         this.state = {
             login: '',
             password: '',
             submitted: false
         };
-
+        props.clear();
+        props.logout();
         this.handleChange = this.handleChange.bind(this);
         this.handleSubmit = this.handleSubmit.bind(this);
     }
@@ -29,18 +28,28 @@ class LoginPage extends React.Component {
         e.preventDefault();
         this.setState({ submitted: true });
         const { login, password } = this.state;
-        const { dispatch } = this.props;
-        if (login && password) {
-            dispatch(userActions.login(login, password))
-        }
+        this.props.login(login, password)
+        
     }
-
+    notificationZone(){
+        return (
+            this.props.authentication.error && 
+            <div className="text-center pt-3">
+                <em className={"nav-item text-left " + this.props.alert.type }>
+                    {this.props.authentication.error}
+                </em>
+            </div>
+        );
+    }
     render() {
-        const { loggingIn } = this.props;
+        const { loggingIn } = this.props.authentication;
         const { login, password, submitted } = this.state;
         return (
             <div className="container p-5">
                 <form className="row mt-5 p-md-5 bg-primary text-white max-w-600px mx-auto" onSubmit={this.handleSubmit}>
+                    <div className='form-group col-12'>
+                        {this.notificationZone()}
+                    </div>
                     <div className='form-group col-12'>
                         <label htmlFor="login">login</label>
                         <input
@@ -87,9 +96,10 @@ class LoginPage extends React.Component {
     }
 }
 function mapStateToProps(state) {
-    const { loggingIn } = state.authentication;
+    const { authentication, alert } = state
     return {
-        loggingIn
+        authentication,
+        alert
     };
 }
-export default connect(mapStateToProps)(LoginPage)
+export default connect(mapStateToProps, Object.assign({}, alertActions, userActions))(LoginPage)

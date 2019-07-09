@@ -1,11 +1,14 @@
 import React from 'react';
 import {NavBar} from '../../Components';
 import { connect } from 'react-redux';
+import {ErrorBoundarySilent} from "../../Exceptions"
 
 const Home = (props) => {
     return (
         <div>
-            <NavBar/>
+            <ErrorBoundarySilent>
+                <NavBar/>
+            </ErrorBoundarySilent>
             <div className="container">
                 <div className="row mt-5">
                     <div className="col-12">

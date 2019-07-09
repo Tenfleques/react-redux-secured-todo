@@ -2,7 +2,7 @@ import { userConstants } from '../constants/user.constants';
 import { userService } from '../RequestService';
 import { alertActions } from './alert.actions';
 import { history } from '../helpers/history';
-import { catchUserActionErrors } from "./catchUserActionErrors";
+import { catchUserActionErrors } from "../Exceptions/catchUserActionErrors";
 
 export const userActions = {
     login,
@@ -51,7 +51,6 @@ function logout() {
         userService.logout()
             .then(
                 res => { 
-                    console.log(res)
                     history.push('/login');
                     return dispatch(success(res));
                 },
@@ -104,7 +103,7 @@ function getUsers() {
 
 function getTodos() {
     return dispatch => {
-        //dispatch(request());
+        dispatch(request());
         userService.getTodos()
             .then(
                 todos => dispatch(success(todos)),
@@ -112,7 +111,7 @@ function getTodos() {
             )
             .catch(catchUserActionErrors);
     };
-    //function request() { return { type: userConstants.GET_TODOS_REQUEST } }
+    function request() { return { type: userConstants.GET_TODOS_REQUEST } }
     function success(todos) { return { type: userConstants.GET_TODOS_SUCCESS, todos } }
     function failure(error) { return { type: userConstants.GET_TODOS_FAILURE, error } }
 }
